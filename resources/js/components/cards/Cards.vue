@@ -5,7 +5,7 @@
       @click="toggleCollapse"
       class="md:hidden h-8 py-3 mb-3 uppercase tracking-widest font-bold text-xs inline-flex items-center justify-center focus:outline-none focus:ring-primary-200 border-1 border-primary-500 focus:ring focus:ring-offset-4 focus:ring-offset-gray-100 dark:ring-gray-600 dark:focus:ring-offset-gray-900 rounded"
     >
-      <span>{{ collapsed ? __('Show Cards') : __('Hide Cards') }}</span>
+      <span>{{ collapsed ? __("Show Cards") : __("Hide Cards") }}</span>
       <CollapseButton class="ml-1" :collapsed="collapsed" />
     </button>
 
@@ -25,12 +25,7 @@
 </template>
 
 <script>
-import filter from 'lodash/filter'
-import { Collapsable } from '@/mixins'
-
 export default {
-  mixins: [Collapsable],
-
   props: {
     cards: Array,
 
@@ -41,12 +36,12 @@ export default {
 
     resourceName: {
       type: String,
-      default: '',
+      default: "",
     },
 
     resourceId: {
       type: [Number, String],
-      default: '',
+      default: "",
     },
 
     onlyOnDetail: {
@@ -56,7 +51,7 @@ export default {
 
     lens: {
       lens: String,
-      default: '',
+      default: "",
     },
   },
 
@@ -64,8 +59,8 @@ export default {
 
   computed: {
     localStorageKey() {
-      return `nova.cards.${this.resource}.${this.size}.collapsed`
+      return `nova.cards.${this.resource}.${this.size}.collapsed`;
     },
   },
-}
+};
 </script>

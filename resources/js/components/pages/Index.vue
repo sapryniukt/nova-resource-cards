@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ '-mt-6': !shouldShowIndexCards && cards.length > 0 }">
+  <div>
     <LoadingView :loading="loading">
       <ResourceCards
         v-if="shouldShowIndexCards"
@@ -22,7 +22,7 @@ export default {
   },
   extends: Nova.pages["Original.Nova.Index"],
   inheritAttrs: false,
-  
+
   computed: {
     cardsEndpoint() {
       return `/nova-vendor/resource-cards/${this.resourceName}/cards`;

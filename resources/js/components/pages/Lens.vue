@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ '-mt-6': !shouldShowLensCards && cards.length > 0 }">
+  <div>
     <LoadingView :loading="loading">
       <ResourceCards
         v-if="shouldShowLensCards"
@@ -23,7 +23,7 @@ export default {
   },
   extends: Nova.pages["Original.Nova.Lens"],
   inheritAttrs: false,
-  
+
   computed: {
     cardsEndpoint() {
       return `/nova-vendor/resource-cards/${this.resourceName}/cards`;
