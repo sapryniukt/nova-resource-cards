@@ -17,8 +17,12 @@ export default {
   /**
    * Fetch all of the metrics panels for this view
    */
-  mounted() {
+  created() {
     this.fetchCards();
+  },
+
+  beforeUnmount() {
+    this.abortController?.abort();
   },
 
   watch: {
@@ -57,13 +61,6 @@ export default {
   },
 
   computed: {
-    /**
-     * Determine whether we have cards to show on the Dashboard.
-     */
-    shouldShowCards() {
-      return this.cards.length > 0;
-    },
-
     shouldShowDetailCards() {
       return this.detailCards.length > 0;
     },
