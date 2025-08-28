@@ -1,4 +1,4 @@
-import filter from 'lodash/filter'
+import filter from "lodash/filter";
 
 export default {
   props: {
@@ -8,21 +8,22 @@ export default {
     },
   },
 
-  data: () => ({ 
+  data: () => ({
     cards: [],
-    loading: true
+    loading: true,
+    abortController: null,
   }),
 
   /**
    * Fetch all of the metrics panels for this view
    */
-  created() {
-    this.fetchCards()
+  mounted() {
+    this.fetchCards();
   },
 
   watch: {
     cardsEndpoint() {
-      this.fetchCards()
+      this.fetchCards();
     },
   },
 
@@ -31,11 +32,26 @@ export default {
       // We disable fetching of cards when the component is being show
       // on a resource detail view to avoid extra network requests
       if (this.loadCards) {
-        const { data: cards } = await Nova.request().get(this.cardsEndpoint, {
-          params: this.extraCardParams,
-        })
-        this.cards = cards
-        this.loading = false;
+        // Abort previous request if exists
+        if (this.abortController) {
+          this.abortController.abort();
+        }
+        this.abortController = new AbortController();
+        try {
+          const { data: cards } = await Nova.request().get(this.cardsEndpoint, {
+            params: this.extraCardParams,
+            signal: this.abortController.signal,
+          });
+          this.cards = cards;
+        } catch (e) {
+          if (e.name === "CanceledError" || e.name === "AbortError") {
+            // Ignore abort errors
+            return;
+          }
+          throw e;
+        } finally {
+          this.loading = false;
+        }
       }
     },
   },
@@ -81,42 +97,66 @@ export default {
     },
 
     indexCards() {
-      return filter(this.cards, c => c.showOnIndex != false && c.resourceCard == true);
+      return filter(
+        this.cards,
+        (c) => c.showOnIndex != false && c.resourceCard == true
+      );
     },
 
     detailCards() {
-      return filter(this.cards, c => c.showOnDetail != false  && c.resourceCard == true);
+      return filter(
+        this.cards,
+        (c) => c.showOnDetail != false && c.resourceCard == true
+      );
     },
 
     creationCards() {
-      return filter(this.cards, c => c.showOnCreation != false  && c.resourceCard == true);
+      return filter(
+        this.cards,
+        (c) => c.showOnCreation != false && c.resourceCard == true
+      );
     },
 
     updateCards() {
-      return filter(this.cards, c => c.showOnUpdate != false  && c.resourceCard == true);
+      return filter(
+        this.cards,
+        (c) => c.showOnUpdate != false && c.resourceCard == true
+      );
     },
 
     attachCards() {
-      return filter(this.cards, c => c.showOnAttach != false  && c.resourceCard == true);
+      return filter(
+        this.cards,
+        (c) => c.showOnAttach != false && c.resourceCard == true
+      );
     },
 
     replicateCards() {
-      return filter(this.cards, c => c.showOnReplicate != false  && c.resourceCard == true);
+      return filter(
+        this.cards,
+        (c) => c.showOnReplicate != false && c.resourceCard == true
+      );
     },
 
     lensCards() {
-      return filter(this.cards, c => c.showOnLens != false  && c.resourceCard == true);
+      return filter(
+        this.cards,
+        (c) => c.showOnLens != false && c.resourceCard == true
+      );
     },
 
     dashboardCards() {
-      return filter(this.cards, c => c.showOnDashboard != false  && c.resourceCard == true);
+      return filter(
+        this.cards,
+        (c) => c.showOnDashboard != false && c.resourceCard == true
+      );
     },
 
     /**
      * Get the extra card params to pass to the endpoint.
      */
     extraCardParams() {
-      return null
+      return null;
     },
   },
-}
+};
